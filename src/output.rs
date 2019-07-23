@@ -1000,6 +1000,7 @@ impl Crate {
         )?;
 
         writeln!(w, "{}  crateName = \"{}\";", indent, self.name)?;
+        writeln!(w, "{}  stripDebugList = if stdenv.isDarwin [ \"bin\" ] else null;", indent)?;
 
         writeln!(w, "{}  version = \"{}\";", indent, version)?;
         if let Some(ref descr) = meta.description {
