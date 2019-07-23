@@ -1058,7 +1058,7 @@ impl Crate {
                             }
                             filter_source.push_str("] ");
                         } else if let Some(ref ws) = workspace_member {
-                            filter_source.push_str("include [ \"Cargo.toml\" \" ");
+                            filter_source.push_str("include [ \"Cargo.toml\" \"");
                             filter_source.push_str(&ws.to_string_lossy());
                             filter_source.push_str("\" ] ");
                         } else {
