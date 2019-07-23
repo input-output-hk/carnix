@@ -54,8 +54,11 @@ fn to_nix_op(w: &mut Write, op: CfgOp, target: &[Cfg]) -> Result<(), Error> {
             Cfg::Equal(ref key, ref value) => match key.as_str() {
                 "target_os" => cfg_value(w, "kernel", value)?,
                 "target_env" => cfg_value(w, "abi", value)?,
-                "target_arch" => cfg_value(w, "cpu", value)?,
-                _ => return Err(CarnixError::CouldNotTranslateTarget.into()),
+                "target_arch" | "target_feature" => cfg_value(w, "cpu", value)?,
+                _ => {
+                    println!("{} -> {}", key.as_str(), value);
+                    return Err(CarnixError::CouldNotTranslateTarget.into())
+                },
             },
             Cfg::Cfg(ref value) => cfg_value(w, "kernel", value)?,
         }
@@ -67,6 +70,7 @@ fn cfg_value(w: &mut Write, key: &str, value: &str) -> Result<(), Error> {
     match value {
         "macos" => write!(w, "{} == \"darwin\"", key)?,
         "unix" => write!(w, "({} == \"linux\" || {} == \"darwin\")", key, key)?,
+        "aes" => write!(w, "({} == \"x86_64\" || {} == \"i686\")", key, key)?,
         other => write!(w, "{} == \"{}\"", key, other)?,
     }
     Ok(())
